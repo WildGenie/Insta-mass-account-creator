@@ -25,16 +25,15 @@ def username(identity):
 #generate password
 def generatePassword():
     password_characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(password_characters) for i in range(12))
+    return ''.join(random.choice(password_characters) for _ in range(12))
 
 
-def genEmail(username) :
-    return ''.join(username + "@" + str(Config["email_domain"]))
+def genEmail(username):
+    return ''.join(f'{username}@' + str(Config["email_domain"]))
 
 def new_account():
-    account_info = {}
     identity, gender, birthday = getRandomIdentity(country=Config["country"])
-    account_info["name"] = identity
+    account_info = {"name": identity}
     account_info["username"] = username(account_info["name"])
     account_info["password"] = generatePassword()
     account_info["email"] = genEmail(account_info["username"])

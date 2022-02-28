@@ -151,7 +151,7 @@ class AccountCreator():
         try:
             if self.use_local_ip_address == False:
                 if self.use_custom_proxy == False:
-                    for i in range(0, config.Config['amount_of_account']):
+                    for _ in range(config.Config['amount_of_account']):
                         if len(self.sockets) > 0:
                             current_socket = self.sockets.pop(0)
                             try:
@@ -168,28 +168,28 @@ class AccountCreator():
 
                             if amount_per_proxy != 0:
                                 print("Creating {} amount of users for this proxy".format(amount_per_proxy))
-                                for i in range(0, amount_per_proxy):
+                                for _ in range(amount_per_proxy):
                                     try:
                                         self.createaccount(proxy)
 
                                     except Exception as e:
-                                        print("An error has occured" + e)
+                                        print(f"An error has occured{e}")
 
                             else:
                                 random_number = randint(1, 20)
                                 print("Creating {} amount of users for this proxy".format(random_number))
-                                for i in range(0, random_number):
+                                for _ in range(random_number):
                                     try:
                                         self.createaccount(proxy)
                                     except Exception as e:
                                         print(e)
             else:
-                for i in range(0, config.Config['amount_of_account']):
-                            try:
-                                self.createaccount()
-                            except Exception as e:
-                                print('Error!, Check its possible your ip might be banned')
-                                self.createaccount()
+                for _ in range(config.Config['amount_of_account']):
+                    try:
+                        self.createaccount()
+                    except Exception as e:
+                        print('Error!, Check its possible your ip might be banned')
+                        self.createaccount()
 
 
         except Exception as e:

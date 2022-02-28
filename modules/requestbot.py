@@ -72,33 +72,11 @@ class CreateAccount:
         elif self.use_custom_proxy is True:
             try: 
                 session = requests.Session()
-                if(self.proxy is not None):
-                    try: 
-                        session_start = session.get(self.url,   proxies={'http' : self.proxy, 'https' : self.proxy})
-                        session.headers.update({'referer' : self.referer_url,'x-csrftoken' : session_start.cookies['csrftoken']})
-
-                        create_request = session.post(self.url, data=payload, allow_redirects=True)
-                        session.headers.update({'x-csrftoken' : session_start.cookies['csrftoken']})
-                        response_text = create_request.text
-                        response = json.loads(create_request.text)
-                        print(response)
-                    except Exception as e:
-                        print(e)
-                        print("---Request Bot --- An error occured while creating account with custom proxy")
-                else: 
+                if self.proxy is None:
                     raise Exception('---Request Bot --- Proxy must to added to proxies.txt list')
 
-                session.get(self.url)
-            except Exception as e:
-                 print(e)
-                 print("---Request Bot --- An error occured while creating account with custom proxy")
-        else:
-            if len(self.sockets) > 0:
-                current_socket = self.sockets.pop(0)
-                proxies = {"http": "http://" + current_socket, "https": "https://" + current_socket}
-                session = requests.Session()
-                try:
-                    session_start = session.get(self.url,   proxies=proxies);
+                try: 
+                    session_start = session.get(self.url,   proxies={'http' : self.proxy, 'https' : self.proxy})
                     session.headers.update({'referer' : self.referer_url,'x-csrftoken' : session_start.cookies['csrftoken']})
 
                     create_request = session.post(self.url, data=payload, allow_redirects=True)
@@ -108,7 +86,31 @@ class CreateAccount:
                     print(response)
                 except Exception as e:
                     print(e)
-                    print("---Request Bot --- An error occured while creating account with fetched proxy")
+                    print("---Request Bot --- An error occured while creating account with custom proxy")
+                session.get(self.url)
+            except Exception as e:
+                 print(e)
+                 print("---Request Bot --- An error occured while creating account with custom proxy")
+        elif len(self.sockets) > 0:
+            current_socket = self.sockets.pop(0)
+            proxies = {
+                "http": f"http://{current_socket}",
+                "https": "https://" + current_socket,
+            }
+
+            session = requests.Session()
+            try:
+                session_start = session.get(self.url,   proxies=proxies);
+                session.headers.update({'referer' : self.referer_url,'x-csrftoken' : session_start.cookies['csrftoken']})
+
+                create_request = session.post(self.url, data=payload, allow_redirects=True)
+                session.headers.update({'x-csrftoken' : session_start.cookies['csrftoken']})
+                response_text = create_request.text
+                response = json.loads(create_request.text)
+                print(response)
+            except Exception as e:
+                print(e)
+                print("---Request Bot --- An error occured while creating account with fetched proxy")
         
 
 
@@ -116,8 +118,7 @@ class CreateAccount:
 
 
 def runBot():
-    for i in range(Config['amount_of_account']):
-       
+    for _ in range(Config['amount_of_account']):
         if(Config['use_custom_proxy'] == True):
              with open(Config['proxy_file_path'], 'r') as file:
                 content = file.read().splitlines()
